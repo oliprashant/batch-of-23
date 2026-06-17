@@ -1,0 +1,2751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Shire — Heart of Middle-earth</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        /* ============ RESET & BASE STYLES ============ */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-deep: #1a1410;
+            --bg-warm: #2c241c;
+            --parchment: #e8dccc;
+            --parchment-light: #f5ede4;
+            --parchment-dark: #d4c5a0;
+            --forest-green: #4a7c59;
+            --forest-green-dark: #3a6347;
+            --deep-gold: #c9a84c;
+            --gold-light: #e0c76e;
+            --terracotta: #8b5e3c;
+            --bronze: #8b7a5a;
+            --copper: #b8956a;
+            --text-light: #f5ede4;
+            --text-dark: #2c241c;
+            --card-bg: #3a2d20;
+            --card-border: #5a4530;
+            --glow-gold: rgba(201, 168, 76, 0.5);
+            --glow-warm: rgba(201, 168, 76, 0.25);
+            --font-display: 'Cinzel', 'Georgia', 'Times New Roman', serif;
+            --font-body: 'Open Sans', 'Segoe UI', 'Helvetica Neue', sans-serif;
+            --font-accent: 'IM Fell English', 'Georgia', 'Times New Roman', serif;
+            --transition-smooth: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-light);
+            font-family: var(--font-body);
+            line-height: 1.7;
+            overflow-x: hidden;
+            min-height: 100vh;
+            background-image:
+                radial-gradient(ellipse at 50% 0%, rgba(201, 168, 76, 0.06) 0%, transparent 70%),
+                radial-gradient(ellipse at 80% 20%, rgba(74, 124, 89, 0.04) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 60%, rgba(139, 94, 60, 0.05) 0%, transparent 50%);
+        }
+
+        /* Subtle paper grain texture for parchment sections */
+        .parchment-texture {
+            background-color: var(--parchment);
+            background-image:
+                repeating-linear-gradient(0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(139, 122, 90, 0.025) 2px,
+                    rgba(139, 122, 90, 0.025) 4px),
+                repeating-linear-gradient(90deg,
+                    transparent,
+                    transparent 3px,
+                    rgba(139, 122, 90, 0.015) 3px,
+                    rgba(139, 122, 90, 0.015) 6px);
+        }
+
+        /* ============ TYPOGRAPHY ============ */
+        h1,
+        h2,
+        h3,
+        h4,
+        .display-font {
+            font-family: var(--font-display);
+            font-weight: 600;
+            letter-spacing: 0.03em;
+        }
+
+        .accent-font {
+            font-family: var(--font-accent);
+            font-style: italic;
+        }
+
+        /* ============ DECORATIVE DIVIDER ============ */
+        .ornament-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem auto;
+            max-width: 400px;
+            opacity: 0.7;
+        }
+        .ornament-divider .line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--bronze), transparent);
+        }
+        .ornament-divider .ornament {
+            font-size: 1.6rem;
+            color: var(--deep-gold);
+            flex-shrink: 0;
+            line-height: 1;
+            animation: ornamentPulse 4s ease-in-out infinite;
+        }
+        @keyframes ornamentPulse {
+            0%,
+            100% {
+                opacity: 0.55;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.25);
+            }
+        }
+
+        /* ============ HERO SECTION ============ */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+            background: linear-gradient(180deg,
+                    #3a2010 0%,
+                    #4a3020 8%,
+                    #5c3a28 18%,
+                    #7a5035 30%,
+                    #9a6845 45%,
+                    #b8805a 58%,
+                    #c9956a 68%,
+                    #b8805a 76%,
+                    #6b4430 88%,
+                    #1a1410 100%);
+            isolation: isolate;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 50% 25%, rgba(255, 200, 120, 0.18) 0%, transparent 55%),
+                radial-gradient(ellipse at 50% 70%, rgba(20, 10, 5, 0.7) 0%, transparent 60%),
+                radial-gradient(ellipse at 30% 40%, rgba(255, 180, 100, 0.06) 0%, transparent 40%),
+                radial-gradient(ellipse at 70% 35%, rgba(255, 180, 100, 0.05) 0%, transparent 40%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .hero-canvas {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 2rem;
+            max-width: 800px;
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.8rem, 7vw, 6rem);
+            font-weight: 800;
+            color: var(--deep-gold);
+            text-shadow:
+                0 0 40px var(--glow-gold),
+                0 0 80px rgba(201, 168, 76, 0.35),
+                0 0 120px rgba(201, 168, 76, 0.2),
+                0 2px 8px rgba(0, 0, 0, 0.5);
+            letter-spacing: 0.06em;
+            animation: titleGlow 3s ease-in-out infinite;
+            line-height: 1.1;
+            margin-bottom: 0.5rem;
+        }
+        @keyframes titleGlow {
+            0%,
+            100% {
+                text-shadow: 0 0 40px var(--glow-gold), 0 0 80px rgba(201, 168, 76, 0.35), 0 0 120px rgba(201, 168, 76, 0.2), 0 2px 8px rgba(0, 0, 0, 0.5);
+            }
+            50% {
+                text-shadow: 0 0 55px rgba(224, 199, 110, 0.7), 0 0 100px rgba(201, 168, 76, 0.5), 0 0 150px rgba(201, 168, 76, 0.3), 0 2px 8px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        .hero-subtitle {
+            font-family: var(--font-accent);
+            font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+            font-style: italic;
+            color: #e8dccc;
+            opacity: 0.9;
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+            letter-spacing: 0.04em;
+            margin-bottom: 3rem;
+            animation: subtitleFade 4s ease-in-out infinite;
+        }
+        @keyframes subtitleFade {
+            0%,
+            100% {
+                opacity: 0.8;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            animation: scrollBounce 2s ease-in-out infinite;
+            color: #d4c5a0;
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            font-family: var(--font-display);
+            text-transform: uppercase;
+            opacity: 0.8;
+            transition: opacity var(--transition-smooth);
+            text-decoration: none;
+        }
+        .scroll-indicator:hover {
+            opacity: 1;
+            color: var(--deep-gold);
+        }
+        .scroll-arrow {
+            width: 28px;
+            height: 28px;
+            border-right: 2px solid currentColor;
+            border-bottom: 2px solid currentColor;
+            transform: rotate(45deg);
+            animation: arrowPulse 2s ease-in-out infinite;
+        }
+        @keyframes scrollBounce {
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            50% {
+                transform: translateX(-50%) translateY(10px);
+            }
+        }
+        @keyframes arrowPulse {
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* ============ MAIN CONTENT CONTAINER ============ */
+        .main-container {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ============ SECTION STYLES ============ */
+        .section {
+            padding: 5rem 2rem;
+            position: relative;
+        }
+        .section-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 700;
+            color: var(--deep-gold);
+            text-align: center;
+            margin-bottom: 1rem;
+            letter-spacing: 0.05em;
+            text-shadow: 0 0 20px rgba(201, 168, 76, 0.25);
+        }
+        .section-subtitle {
+            text-align: center;
+            color: #c9b896;
+            font-family: var(--font-accent);
+            font-style: italic;
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.85;
+        }
+
+        /* ============ INTRODUCTION SECTION ============ */
+        #introduction {
+            background: linear-gradient(180deg, var(--bg-deep) 0%, #221a14 40%, #2a1f16 100%);
+            position: relative;
+        }
+        #introduction::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--bronze), var(--deep-gold), var(--bronze), transparent);
+            opacity: 0.7;
+        }
+
+        .intro-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+        .intro-text {
+            color: #d4c5b8;
+            font-size: 1.05rem;
+            line-height: 1.85;
+        }
+        .intro-text p {
+            margin-bottom: 1.2rem;
+        }
+        .intro-text .dropcap {
+            float: left;
+            font-family: var(--font-display);
+            font-size: 4.5rem;
+            font-weight: 700;
+            line-height: 0.75;
+            color: var(--deep-gold);
+            margin-right: 0.6rem;
+            margin-top: 0.15rem;
+            text-shadow: 0 0 15px rgba(201, 168, 76, 0.35);
+        }
+
+        .intro-decoration {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .hobbit-hole-silhouette {
+            width: 100%;
+            max-width: 380px;
+            aspect-ratio: 1 / 1;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 50% 55%, #3a2d1a 0%, #2a1f10 45%, #1a1008 100%);
+            position: relative;
+            box-shadow:
+                0 0 60px rgba(201, 168, 76, 0.2),
+                0 0 120px rgba(139, 94, 60, 0.15),
+                inset 0 0 80px rgba(0, 0, 0, 0.5);
+            border: 3px solid rgba(139, 122, 90, 0.4);
+            overflow: hidden;
+        }
+        .hobbit-hole-silhouette::before {
+            content: '';
+            position: absolute;
+            inset: 12% 15% 30% 15%;
+            border-radius: 50% 50% 10% 10% / 60% 60% 5% 5%;
+            background: #1a1008;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8);
+        }
+        .hobbit-hole-silhouette::after {
+            content: '';
+            position: absolute;
+            bottom: 18%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30%;
+            height: 25%;
+            background: #1a1008;
+            border-radius: 40% 40% 0 0;
+        }
+        .hobbit-hole-detail {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 22%;
+            height: 22%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 200, 100, 0.5) 0%, rgba(200, 150, 60, 0.2) 40%, transparent 70%);
+            animation: warmGlow 3s ease-in-out infinite;
+            z-index: 2;
+        }
+        @keyframes warmGlow {
+            0%,
+            100% {
+                opacity: 0.5;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                opacity: 0.9;
+                transform: translate(-50%, -50%) scale(1.3);
+            }
+        }
+
+        /* Fact cards */
+        .fact-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-top: 2.5rem;
+        }
+        .fact-card {
+            background: rgba(58, 45, 32, 0.7);
+            border: 1px solid rgba(139, 122, 90, 0.35);
+            border-radius: 10px;
+            padding: 1.3rem 1rem;
+            text-align: center;
+            transition: all var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        .fact-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--deep-gold), transparent);
+            opacity: 0;
+            transition: opacity var(--transition-smooth);
+        }
+        .fact-card:hover {
+            border-color: var(--deep-gold);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 25px rgba(201, 168, 76, 0.15);
+        }
+        .fact-card:hover::before {
+            opacity: 1;
+        }
+        .fact-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .fact-card h4 {
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            color: var(--deep-gold);
+            letter-spacing: 0.05em;
+            margin-bottom: 0.3rem;
+        }
+        .fact-card p {
+            font-size: 0.85rem;
+            color: #c9b896;
+            line-height: 1.5;
+        }
+
+        /* ============ CHARACTERS SECTION ============ */
+        #characters {
+            background: linear-gradient(180deg, #2a1f16 0%, #1f1810 30%, #1a1410 100%);
+            position: relative;
+        }
+        #characters::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--bronze), var(--deep-gold), var(--bronze), transparent);
+            opacity: 0.7;
+        }
+
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.8rem;
+            margin-top: 1rem;
+        }
+        .character-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 2rem 1.6rem 1.8rem;
+            position: relative;
+            transition: all var(--transition-bounce);
+            cursor: default;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+        }
+        .character-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 14px;
+            border: 1px solid transparent;
+            transition: all var(--transition-smooth);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .character-card:hover {
+            transform: translateY(-10px);
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, 0.5),
+                0 0 40px var(--glow-warm),
+                0 0 80px rgba(201, 168, 76, 0.12);
+            border-color: rgba(201, 168, 76, 0.5);
+        }
+        .character-card:hover::before {
+            border-color: rgba(201, 168, 76, 0.45);
+            box-shadow: inset 0 0 60px rgba(201, 168, 76, 0.06);
+        }
+        .card-corner-ornament {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            font-size: 1.5rem;
+            opacity: 0.35;
+            transition: all var(--transition-smooth);
+            color: var(--deep-gold);
+            z-index: 0;
+        }
+        .character-card:hover .card-corner-ornament {
+            opacity: 0.75;
+            transform: rotate(15deg) scale(1.2);
+        }
+        .character-icon {
+            font-size: 2.8rem;
+            display: block;
+            margin-bottom: 0.3rem;
+            position: relative;
+            z-index: 0;
+            transition: transform var(--transition-smooth);
+        }
+        .character-card:hover .character-icon {
+            transform: scale(1.1);
+        }
+        .character-name {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--deep-gold);
+            letter-spacing: 0.04em;
+            position: relative;
+            z-index: 0;
+        }
+        .character-role {
+            font-family: var(--font-accent);
+            font-style: italic;
+            font-size: 0.95rem;
+            color: #c9b896;
+            opacity: 0.85;
+            letter-spacing: 0.03em;
+            position: relative;
+            z-index: 0;
+        }
+        .character-desc {
+            font-size: 0.9rem;
+            color: #c4b5a0;
+            line-height: 1.6;
+            flex-grow: 1;
+            position: relative;
+            z-index: 0;
+        }
+        .character-traits {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            position: relative;
+            z-index: 0;
+        }
+        .trait-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 0.25em 0.7em;
+            border-radius: 20px;
+            background: rgba(139, 122, 90, 0.2);
+            border: 1px solid rgba(139, 122, 90, 0.3);
+            color: #d4c5a0;
+            letter-spacing: 0.03em;
+            transition: all var(--transition-smooth);
+        }
+        .character-card:hover .trait-tag {
+            background: rgba(201, 168, 76, 0.15);
+            border-color: rgba(201, 168, 76, 0.4);
+            color: #e0c76e;
+        }
+        .card-cta {
+            font-size: 0.8rem;
+            color: var(--deep-gold);
+            text-decoration: none;
+            font-family: var(--font-display);
+            letter-spacing: 0.05em;
+            position: relative;
+            z-index: 0;
+            transition: all var(--transition-smooth);
+            opacity: 0.7;
+            align-self: flex-start;
+            cursor: pointer;
+            border-bottom: 1px solid transparent;
+        }
+        .character-card:hover .card-cta {
+            opacity: 1;
+            border-bottom-color: var(--deep-gold);
+        }
+
+        /* ============ QUOTE SECTION ============ */
+        #quote-section {
+            background: var(--parchment);
+            color: var(--text-dark);
+            position: relative;
+            text-align: center;
+            padding: 6rem 2rem;
+        }
+        #quote-section::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--terracotta), var(--deep-gold), var(--terracotta), transparent);
+            opacity: 0.7;
+        }
+        #quote-section::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--terracotta), var(--deep-gold), var(--terracotta), transparent);
+            opacity: 0.7;
+        }
+        .quote-inner {
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .quote-mark {
+            font-family: var(--font-display);
+            font-size: 8rem;
+            line-height: 0.2;
+            color: var(--deep-gold);
+            opacity: 0.4;
+            display: block;
+            user-select: none;
+            pointer-events: none;
+        }
+        .quote-mark.open {
+            text-align: left;
+            margin-bottom: -0.5rem;
+        }
+        .quote-mark.close {
+            text-align: right;
+            margin-top: -1rem;
+        }
+        .quote-text {
+            font-family: var(--font-accent);
+            font-style: italic;
+            font-size: clamp(1.3rem, 3vw, 2rem);
+            line-height: 1.55;
+            color: #3a2d1a;
+            letter-spacing: 0.02em;
+            padding: 0 1rem;
+        }
+        .quote-attribution {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            color: #6b4d30;
+            letter-spacing: 0.06em;
+            margin-top: 1.5rem;
+            position: relative;
+            display: inline-block;
+            padding-top: 0.8rem;
+        }
+        .quote-attribution::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 1px;
+            background: var(--bronze);
+        }
+        .quote-ornament {
+            display: inline-block;
+            margin: 0 0.5rem;
+            color: var(--deep-gold);
+            font-size: 1.2rem;
+            opacity: 0.7;
+        }
+
+        /* ============ CTA SECTION ============ */
+        #cta-section {
+            background: linear-gradient(180deg, var(--bg-deep) 0%, #1f1810 50%, #1a1410 100%);
+            text-align: center;
+            padding: 5rem 2rem;
+            position: relative;
+        }
+        .cta-text {
+            color: #d4c5b8;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.8;
+            font-family: var(--font-accent);
+            font-style: italic;
+            opacity: 0.9;
+        }
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 0.07em;
+            color: #1a1410;
+            text-decoration: none;
+            border-radius: 50px;
+            cursor: pointer;
+            position: relative;
+            background: linear-gradient(135deg, #d4a84c 0%, #c9a030 30%, #e0c76e 60%, #b89040 100%);
+            border: none;
+            box-shadow:
+                0 6px 25px rgba(201, 168, 76, 0.4),
+                0 0 50px rgba(201, 168, 76, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            transition: all var(--transition-bounce);
+            text-transform: uppercase;
+        }
+        .cta-button:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow:
+                0 12px 35px rgba(201, 168, 76, 0.55),
+                0 0 70px rgba(201, 168, 76, 0.3),
+                0 0 120px rgba(201, 168, 76, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+        .cta-button:active {
+            transform: translateY(-1px) scale(0.98);
+            transition: all 0.1s ease;
+        }
+        .cta-button::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 54px;
+            border: 2px solid rgba(201, 168, 76, 0.5);
+            animation: ctaPulse 2.5s ease-in-out infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+        @keyframes ctaPulse {
+            0%,
+            100% {
+                opacity: 0.4;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.9;
+                transform: scale(1.06);
+            }
+        }
+
+        /* ============ FOOTER ============ */
+        .footer {
+            background: #0f0b08;
+            text-align: center;
+            padding: 2.5rem 2rem;
+            position: relative;
+            border-top: 1px solid rgba(139, 122, 90, 0.25);
+        }
+        .footer-divider {
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--bronze), transparent);
+            margin: 0 auto 1.5rem;
+            opacity: 0.6;
+        }
+        .footer-copy {
+            font-size: 0.85rem;
+            color: #8b7a6a;
+            letter-spacing: 0.04em;
+            font-family: var(--font-display);
+        }
+        .footer-quote {
+            font-family: var(--font-accent);
+            font-style: italic;
+            font-size: 0.85rem;
+            color: #6b5d4e;
+            margin-top: 0.6rem;
+            letter-spacing: 0.03em;
+        }
+        .footer-leaves {
+            font-size: 1.2rem;
+            letter-spacing: 0.4em;
+            opacity: 0.5;
+            margin-bottom: 0.8rem;
+            color: var(--forest-green);
+        }
+
+        /* ============ FADE-IN ANIMATION ============ */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ============ RESPONSIVE STYLES ============ */
+        @media (max-width: 1024px) {
+            .intro-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .intro-decoration {
+                order: -1;
+            }
+            .hobbit-hole-silhouette {
+                max-width: 250px;
+            }
+            .character-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.4rem;
+            }
+            .fact-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: clamp(2rem, 8vw, 3.5rem);
+            }
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            .section {
+                padding: 3.5rem 1.2rem;
+            }
+            .character-grid {
+                grid-template-columns: 1fr;
+                gap: 1.2rem;
+                max-width: 450px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .character-card {
+                padding: 1.5rem 1.3rem 1.4rem;
+            }
+            .fact-cards {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.7rem;
+            }
+            .fact-card {
+                padding: 1rem 0.7rem;
+            }
+            .intro-text .dropcap {
+                font-size: 3.5rem;
+            }
+            .quote-text {
+                font-size: 1.1rem;
+            }
+            .quote-mark {
+                font-size: 5rem;
+            }
+            .scroll-indicator span {
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                min-height: 90vh;
+            }
+            .hero-title {
+                font-size: 1.9rem;
+            }
+            .hero-subtitle {
+                font-size: 0.9rem;
+            }
+            .section {
+                padding: 2.5rem 1rem;
+            }
+            .section-title {
+                font-size: 1.5rem;
+            }
+            .fact-cards {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.5rem;
+            }
+            .fact-card {
+                padding: 0.8rem 0.5rem;
+                border-radius: 8px;
+            }
+            .fact-card h4 {
+                font-size: 0.75rem;
+            }
+            .fact-card p {
+                font-size: 0.7rem;
+            }
+            .fact-icon {
+                font-size: 1.4rem;
+            }
+            .character-name {
+                font-size: 1.2rem;
+            }
+            .character-desc {
+                font-size: 0.82rem;
+            }
+            .cta-button {
+                padding: 0.85rem 1.8rem;
+                font-size: 0.95rem;
+            }
+            .quote-text {
+                font-size: 1rem;
+            }
+            .quote-mark {
+                font-size: 4rem;
+            }
+        }
+
+        /* ============ REDUCED MOTION ============ */
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+            .hero-title,
+            .hero-subtitle,
+            .scroll-indicator,
+            .cta-button::after,
+            .hobbit-hole-detail,
+            .ornament-divider .ornament {
+                animation: none;
+            }
+            .fade-in-section {
+                opacity: 1;
+                transform: none;
+                transition: none;
+            }
+            .character-card:hover {
+                transform: translateY(-4px);
+            }
+            .cta-button:hover {
+                transform: translateY(-2px) scale(1.01);
+            }
+            .hero-canvas {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============ HERO SECTION ============ -->
+    <section class="hero" id="hero" aria-label="Hero section - The Shire">
+        <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
+        <div class="hero-content">
+            <h1 class="hero-title">The Shire</h1>
+            <p class="hero-subtitle">"In a hole in the ground there lived a hobbit..."</p>
+        </div>
+        <a href="#introduction" class="scroll-indicator" aria-label="Scroll to explore">
+            <span>Scroll to Explore</span>
+            <div class="scroll-arrow"></div>
+        </a>
+    </section>
+
+    <!-- ============ MAIN CONTENT ============ -->
+    <div class="main-container">
+
+        <!-- Introduction Section -->
+        <section class="section fade-in-section" id="introduction" aria-labelledby="intro-title">
+            <div class="section-inner">
+                <h2 class="section-title" id="intro-title">Welcome to The Shire</h2>
+                <p class="section-subtitle">The Heart of the West</p>
+
+                <div class="intro-grid">
+                    <div class="intro-text">
+                        <p>
+                            <span class="dropcap">T</span>he Shire is a land of rolling green hills, lush farmland, and quiet rivers. It is home to the hobbits, a peaceful folk who love good food, gardens, and simple pleasures. Here, time moves slowly, and life is measured in meals and seasons. The Shire is divided into four main regions: the Northfarthing, Southfarthing, Eastfarthing, and Westfarthing, with Hobbiton and Bywater at its heart.
+                        </p>
+                        <p>
+                            The Party Tree stands in the center of Hobbiton, a massive oak where Bilbo Baggins held his famous farewell party. The hobbits live in hobbit holes—cozy, circular homes dug into hillsides, with round doors painted in bright colors. It is a land of beauty, peace, and simple joy.
+                        </p>
+                    </div>
+                    <div class="intro-decoration" aria-hidden="true">
+                        <div class="hobbit-hole-silhouette">
+                            <div class="hobbit-hole-detail"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fact Cards -->
+                <div class="fact-cards">
+                    <div class="fact-card">
+                        <span class="fact-icon">🗺️</span>
+                        <h4>Location</h4>
+                        <p>Eriador, northwest of Middle-earth</p>
+                    </div>
+                    <div class="fact-card">
+                        <span class="fact-icon">🌳</span>
+                        <h4>Notable Features</h4>
+                        <p>Rolling hills, hobbit holes, the Party Tree, Bywater</p>
+                    </div>
+                    <div class="fact-card">
+                        <span class="fact-icon">☀️</span>
+                        <h4>Climate</h4>
+                        <p>Temperate, with long summers and mild winters</p>
+                    </div>
+                    <div class="fact-card">
+                        <span class="fact-icon">🚪</span>
+                        <h4>Population</h4>
+                        <p>Hobbits — lovers of peace, good food, and gardening</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ornament Divider -->
+        <div class="ornament-divider" aria-hidden="true">
+            <span class="line"></span>
+            <span class="ornament">🍂</span>
+            <span class="line"></span>
+        </div>
+
+        <!-- Notable Hobbits Section -->
+        <section class="section fade-in-section" id="characters" aria-labelledby="characters-title">
+            <div class="section-inner">
+                <h2 class="section-title" id="characters-title">Notable Hobbits</h2>
+                <p class="section-subtitle">Heroes of the Shire &amp; Beyond</p>
+
+                <div class="character-grid">
+                    <!-- Frodo Baggins -->
+                    <article class="character-card">
+                        <span class="card-corner-ornament" aria-hidden="true">💍</span>
+                        <span class="character-icon" aria-hidden="true">🧝</span>
+                        <h3 class="character-name">Frodo Baggins</h3>
+                        <p class="character-role">The Ring-bearer</p>
+                        <p class="character-desc">
+                            Frodo inherited the One Ring from his uncle Bilbo and was tasked with destroying it in the fires of Mount Doom. Despite the Ring's corrupting influence, he remained steadfast, carrying the burden to the very end. His journey is a testament to the idea that even the smallest person can change the course of the future.
+                        </p>
+                        <div class="character-traits">
+                            <span class="trait-tag">Courageous</span>
+                            <span class="trait-tag">Resilient</span>
+                            <span class="trait-tag">Loyal</span>
+                        </div>
+                        <span class="card-cta" tabindex="0" role="button" aria-label="Learn more about Frodo's journey">Learn more about Frodo's journey →</span>
+                    </article>
+
+                    <!-- Samwise Gamgee -->
+                    <article class="character-card">
+                        <span class="card-corner-ornament" aria-hidden="true">🌻</span>
+                        <span class="character-icon" aria-hidden="true">🌿</span>
+                        <h3 class="character-name">Samwise Gamgee</h3>
+                        <p class="character-role">The Loyal Gardener</p>
+                        <p class="character-desc">
+                            Samwise, Frodo's loyal gardener, is the true hero of the tale. He accompanied Frodo on the quest, providing unwavering support and friendship. Known for his simple wisdom, deep love of the Shire, and steadfast loyalty, Sam embodies humility and courage. After the war, he became Mayor of the Shire.
+                        </p>
+                        <div class="character-traits">
+                            <span class="trait-tag">Loyal</span>
+                            <span class="trait-tag">Humble</span>
+                            <span class="trait-tag">Wise</span>
+                        </div>
+                        <span class="card-cta" tabindex="0" role="button" aria-label="Learn more about Samwise's journey">Learn more about Sam's devotion →</span>
+                    </article>
+
+                    <!-- Bilbo Baggins -->
+                    <article class="character-card">
+                        <span class="card-corner-ornament" aria-hidden="true">📜</span>
+                        <span class="character-icon" aria-hidden="true">🗝️</span>
+                        <h3 class="character-name">Bilbo Baggins</h3>
+                        <p class="character-role">The Adventurer</p>
+                        <p class="character-desc">
+                            Bilbo is the hobbit who started it all. He embarked on an adventure with Thorin Oakenshield to reclaim the Lonely Mountain, finding the One Ring in Gollum's cave along the way. A lover of maps, riddles, and stories, Bilbo lived to be 131 years old—one of the oldest hobbits in history.
+                        </p>
+                        <div class="character-traits">
+                            <span class="trait-tag">Curious</span>
+                            <span class="trait-tag">Witty</span>
+                            <span class="trait-tag">Adventurous</span>
+                        </div>
+                        <span class="card-cta" tabindex="0" role="button" aria-label="Learn more about Bilbo's adventures">Learn more about Bilbo's adventures →</span>
+                    </article>
+
+                    <!-- Merry Brandybuck -->
+                    <article class="character-card">
+                        <span class="card-corner-ornament" aria-hidden="true">⚔️</span>
+                        <span class="character-icon" aria-hidden="true">🛡️</span>
+                        <h3 class="character-name">Meriadoc Brandybuck</h3>
+                        <p class="character-role">Master of Buckland</p>
+                        <p class="character-desc">
+                            Merry is one of Frodo's closest friends and a member of the Fellowship. Known for his intelligence and bravery, he played a crucial role in the War of the Ring, helping to defeat the Witch-king of Angmar alongside Éowyn. After the war, Merry became the Master of Buckland.
+                        </p>
+                        <div class="character-traits">
+                            <span class="trait-tag">Brave</span>
+                            <span class="trait-tag">Intelligent</span>
+                            <span class="trait-tag">Loyal</span>
+                        </div>
+                        <span class="card-cta" tabindex="0" role="button" aria-label="Learn more about Merry's story">Learn more about Merry's valor →</span>
+                    </article>
+
+                    <!-- Pippin Took -->
+                    <article class="character-card">
+                        <span class="card-corner-ornament" aria-hidden="true">🎵</span>
+                        <span class="character-icon" aria-hidden="true">✨</span>
+                        <h3 class="character-name">Peregrin Took</h3>
+                        <p class="character-role">The Youngest Hobbit</p>
+                        <p class="character-desc">
+                            Pippin is the youngest of the hobbits and a member of the Fellowship. Known for his mischievous nature and quick wit, his journey takes him from the Shire to Minas Tirith, where he serves as a guard in Gondor. Despite his playful nature, Pippin proves his worth in battle.
+                        </p>
+                        <div class="character-traits">
+                            <span class="trait-tag">Mischievous</span>
+                            <span class="trait-tag">Courageous</span>
+                            <span class="trait-tag">Quick-witted</span>
+                        </div>
+                        <span class="card-cta" tabindex="0" role="button" aria-label="Learn more about Pippin's journey">Learn more about Pippin's growth →</span>
+                    </article>
+
+                    <!-- Gandalf the Grey -->
+                    <article class="character-card">
+                        <span class="card-corner-ornament" aria-hidden="true">🔮</span>
+                        <span class="character-icon" aria-hidden="true">🧙‍♂️</span>
+                        <h3 class="character-name">Gandalf the Grey</h3>
+                        <p class="character-role">The Wise Wizard</p>
+                        <p class="character-desc">
+                            Gandalf is one of the Maiar—a divine being sent to Middle-earth to help fight Sauron. Known for his wisdom and deep connection to the hobbits, he guided Frodo and his companions through their journey, providing counsel and magical aid. A friend to all who fight against darkness.
+                        </p>
+                        <div class="character-traits">
+                            <span class="trait-tag">Wise</span>
+                            <span class="trait-tag">Powerful</span>
+                            <span class="trait-tag">Compassionate</span>
+                        </div>
+                        <span class="card-cta" tabindex="0" role="button" aria-label="Learn more about Gandalf">Learn more about Gandalf →</span>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quote Section -->
+        <section class="section fade-in-section parchment-texture" id="quote-section" aria-labelledby="quote-heading">
+            <div class="quote-inner">
+                <span class="quote-mark open" aria-hidden="true">"</span>
+                <p class="quote-text" id="quote-heading">
+                    The Shire is my home. My heart belongs there. There is no way back to the Shire, but there is always a way forward.
+                </p>
+                <span class="quote-mark close" aria-hidden="true">"</span>
+                <p class="quote-attribution">
+                    <span class="quote-ornament" aria-hidden="true">❧</span> Samwise Gamgee
+                    <span class="quote-ornament" aria-hidden="true">❧</span>
+                </p>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="section fade-in-section" id="cta-section" aria-labelledby="cta-title">
+            <div class="section-inner">
+                <h2 class="section-title" id="cta-title">Explore Middle-earth</h2>
+                <p class="cta-text">
+                    Beyond the rolling hills of the Shire lie vast forests, towering mountains, and ancient cities. The road goes ever on—will you follow it?
+                </p>
+                <a href="#" class="cta-button" role="button" aria-label="Explore more of Middle-earth">Explore More of Middle-earth</a>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" role="contentinfo">
+        <div class="footer-leaves" aria-hidden="true">🍂 🌿 🍂</div>
+        <div class="footer-divider" aria-hidden="true"></div>
+        <p class="footer-copy">&copy; 2024 Middle-earth Explorer</p>
+        <p class="footer-quote">"Not all those who wander are lost." — J.R.R. Tolkien</p>
+    </footer>
+
+    <script>
+        (function() {
+            // ============ HERO CANVAS - FIREFLY PARTICLES ============
+            const canvas = document.getElementById('heroCanvas');
+            if (canvas && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+                const ctx = canvas.getContext('2d');
+                let width, height;
+                const particles = [];
+                const maxParticles = 55;
+                const isMobile = window.innerWidth < 768;
+
+                function resizeCanvas() {
+                    width = canvas.width = canvas.offsetWidth;
+                    height = canvas.height = canvas.offsetHeight;
+                }
+
+                class Firefly {
+                    constructor() {
+                        this.reset(true);
+                    }
+                    reset(initial) {
+                        this.x = Math.random() * width;
+                        this.y = initial ? Math.random() * height : height + Math.random() * 100;
+                        this.size = Math.random() * 2.5 + 1.2;
+                        this.speedY = Math.random() * 0.5 + 0.25;
+                        this.speedX = (Math.random() - 0.5) * 0.6;
+                        this.opacity = Math.random() * 0.7 + 0.2;
+                        this.twinkleSpeed = Math.random() * 0.03 + 0.008;
+                        this.twinkleOffset = Math.random() * Math.PI * 2;
+                        this.glowSize = this.size * (Math.random() * 2.5 + 2);
+                    }
+                    update() {
+                        this.y -= this.speedY;
+                        this.x += this.speedX + Math.sin(this.y * 0.02 + this.twinkleOffset) * 0.3;
+                        this.opacity += Math.sin(Date.now() * this.twinkleSpeed + this.twinkleOffset) * 0.015;
+                        this.opacity = Math.max(0.1, Math.min(0.9, this.opacity));
+                        if (this.y < -30 || this.x < -30 || this.x > width + 30) {
+                            this.reset(false);
+                        }
+                    }
+                    draw(ctx) {
+                        const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.glowSize);
+                        const alpha = this.opacity;
+                        gradient.addColorStop(0, `rgba(255,210,130,${alpha})`);
+                        gradient.addColorStop(0.25, `rgba(255,190,100,${alpha * 0.7})`);
+                        gradient.addColorStop(0.6, `rgba(200,150,60,${alpha * 0.2})`);
+                        gradient.addColorStop(1, 'rgba(200,150,60,0)');
+                        ctx.fillStyle = gradient;
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.glowSize, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = `rgba(255,240,200,${alpha})`;
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+
+                function initParticles() {
+                    particles.length = 0;
+                    const count = isMobile ? Math.floor(maxParticles * 0.5) : maxParticles;
+                    for (let i = 0; i < count; i++) {
+                        particles.push(new Firefly());
+                    }
+                }
+
+                function animate() {
+                    ctx.clearRect(0, 0, width, height);
+                    particles.forEach(p => {
+                        p.update();
+                        p.draw(ctx);
+                    });
+                    requestAnimationFrame(animate);
+                }
+
+                resizeCanvas();
+                initParticles();
+                animate();
+
+                window.addEventListener('resize', () => {
+                    resizeCanvas();
+                    const newIsMobile = window.innerWidth < 768;
+                    if (newIsMobile !== isMobile) {
+                        isMobile = newIsMobile;
+                        initParticles();
+                    }
+                });
+            }
+
+            // ============ FADE-IN ON SCROLL (Intersection Observer) ============
+            const fadeSections = document.querySelectorAll('.fade-in-section');
+            if (fadeSections.length > 0 && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    threshold: 0.12,
+                    rootMargin: '0px 0px -40px 0px'
+                });
+                fadeSections.forEach(section => observer.observe(section));
+            } else {
+                // If reduced motion, make all sections visible immediately
+                fadeSections.forEach(section => section.classList.add('visible'));
+            }
+
+            // ============ SMOOTH SCROLL FOR SCROLL INDICATOR ============
+            const scrollIndicator = document.querySelector('.scroll-indicator');
+            if (scrollIndicator) {
+                scrollIndicator.addEventListener('click', function(e) {
+                    const targetId = this.getAttribute('href');
+                    if (targetId && targetId.startsWith('#')) {
+                        const target = document.querySelector(targetId);
+                        if (target) {
+                            e.preventDefault();
+                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }
+                });
+            }
+
+            // ============ CARD CTA CLICK HANDLERS ============
+            document.querySelectorAll('.card-cta').forEach(cta => {
+                cta.addEventListener('click', function() {
+                    const card = this.closest('.character-card');
+                    const name = card ? card.querySelector('.character-name')?.textContent :
+                        'this character';
+                    // Subtle feedback pulse on the card
+                    if (card) {
+                        card.style.transition = 'all 0.15s ease';
+                        card.style.transform = 'scale(0.97)';
+                        card.style.boxShadow =
+                            '0 0 50px rgba(201,168,76,0.6), 0 0 100px rgba(201,168,76,0.3)';
+                        setTimeout(() => {
+                            card.style.transition = 'all 0.5s cubic-bezier(0.34,1.56,0.64,1)';
+                            card.style.transform = '';
+                            card.style.boxShadow = '';
+                        }, 180);
+                    }
+                    console.log(`Exploring more about ${name}...`);
+                });
+                cta.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+            });
+
+            // ============ CTA BUTTON CLICK ============
+            const mainCta = document.querySelector('.cta-button');
+            if (mainCta) {
+                mainCta.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const btn = this;
+                    btn.style.transition = 'all 0.12s ease';
+                    btn.style.transform = 'scale(0.94)';
+                    btn.style.boxShadow = '0 0 80px rgba(201,168,76,0.8), 0 0 150px rgba(201,168,76,0.5)';
+                    setTimeout(() => {
+                        btn.style.transition = 'all 0.5s cubic-bezier(0.34,1.56,0.64,1)';
+                        btn.style.transform = '';
+                        btn.style.boxShadow = '';
+                    }, 200);
+                    // Scroll to top or could navigate elsewhere
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+        })();
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Shire — Heart of Middle-earth</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        /* ============ RESET & BASE STYLES ============ */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg-deep: #1a1410;
+            --bg-warm: #2c241c;
+            --parchment: #e8dccc;
+            --parchment-light: #f5ede4;
+            --parchment-dark: #d4c5a0;
+            --forest-green: #4a7c59;
+            --forest-green-dark: #3a6347;
+            --deep-gold: #c9a84c;
+            --gold-light: #e0c76e;
+            --terracotta: #8b5e3c;
+            --bronze: #8b7a5a;
+            --copper: #b8956a;
+            --text-light: #f5ede4;
+            --text-dark: #2c241c;
+            --card-bg: #3a2d20;
+            --card-border: #5a4530;
+            --glow-gold: rgba(201, 168, 76, 0.5);
+            --glow-warm: rgba(201, 168, 76, 0.25);
+            --font-display: 'Cinzel', 'Georgia', 'Times New Roman', serif;
+            --font-body: 'Open Sans', 'Segoe UI', 'Helvetica Neue', sans-serif;
+            --font-accent: 'IM Fell English', 'Georgia', 'Times New Roman', serif;
+            --transition-smooth: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-light);
+            font-family: var(--font-body);
+            line-height: 1.7;
+            overflow-x: hidden;
+            min-height: 100vh;
+            background-image:
+                radial-gradient(ellipse at 50% 0%, rgba(201, 168, 76, 0.06) 0%, transparent 70%),
+                radial-gradient(ellipse at 80% 20%, rgba(74, 124, 89, 0.04) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 60%, rgba(139, 94, 60, 0.05) 0%, transparent 50%);
+        }
+
+        /* Subtle paper grain texture for parchment sections */
+        .parchment-texture {
+            background-color: var(--parchment);
+            background-image:
+                repeating-linear-gradient(0deg,
+                    transparent,
+                    transparent 2px,
+                    rgba(139, 122, 90, 0.025) 2px,
+                    rgba(139, 122, 90, 0.025) 4px),
+                repeating-linear-gradient(90deg,
+                    transparent,
+                    transparent 3px,
+                    rgba(139, 122, 90, 0.015) 3px,
+                    rgba(139, 122, 90, 0.015) 6px);
+        }
+
+        /* ============ TYPOGRAPHY ============ */
+        h1,
+        h2,
+        h3,
+        h4,
+        .display-font {
+            font-family: var(--font-display);
+            font-weight: 600;
+            letter-spacing: 0.03em;
+        }
+
+        .accent-font {
+            font-family: var(--font-accent);
+            font-style: italic;
+        }
+
+        /* ============ DECORATIVE DIVIDER ============ */
+        .ornament-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem auto;
+            max-width: 400px;
+            opacity: 0.7;
+        }
+        .ornament-divider .line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--bronze), transparent);
+        }
+        .ornament-divider .ornament {
+            font-size: 1.6rem;
+            color: var(--deep-gold);
+            flex-shrink: 0;
+            line-height: 1;
+            animation: ornamentPulse 4s ease-in-out infinite;
+        }
+        @keyframes ornamentPulse {
+            0%,
+            100% {
+                opacity: 0.55;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.25);
+            }
+        }
+
+        /* ============ HERO SECTION ============ */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            overflow: hidden;
+            background: linear-gradient(180deg,
+                    #3a2010 0%,
+                    #4a3020 8%,
+                    #5c3a28 18%,
+                    #7a5035 30%,
+                    #9a6845 45%,
+                    #b8805a 58%,
+                    #c9956a 68%,
+                    #b8805a 76%,
+                    #6b4430 88%,
+                    #1a1410 100%);
+            isolation: isolate;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 50% 25%, rgba(255, 200, 120, 0.18) 0%, transparent 55%),
+                radial-gradient(ellipse at 50% 70%, rgba(20, 10, 5, 0.7) 0%, transparent 60%),
+                radial-gradient(ellipse at 30% 40%, rgba(255, 180, 100, 0.06) 0%, transparent 40%),
+                radial-gradient(ellipse at 70% 35%, rgba(255, 180, 100, 0.05) 0%, transparent 40%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .hero-canvas {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 2rem;
+            max-width: 800px;
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(2.8rem, 7vw, 6rem);
+            font-weight: 800;
+            color: var(--deep-gold);
+            text-shadow:
+                0 0 40px var(--glow-gold),
+                0 0 80px rgba(201, 168, 76, 0.35),
+                0 0 120px rgba(201, 168, 76, 0.2),
+                0 2px 8px rgba(0, 0, 0, 0.5);
+            letter-spacing: 0.06em;
+            animation: titleGlow 3s ease-in-out infinite;
+            line-height: 1.1;
+            margin-bottom: 0.5rem;
+        }
+        @keyframes titleGlow {
+            0%,
+            100% {
+                text-shadow: 0 0 40px var(--glow-gold), 0 0 80px rgba(201, 168, 76, 0.35), 0 0 120px rgba(201, 168, 76, 0.2), 0 2px 8px rgba(0, 0, 0, 0.5);
+            }
+            50% {
+                text-shadow: 0 0 55px rgba(224, 199, 110, 0.7), 0 0 100px rgba(201, 168, 76, 0.5), 0 0 150px rgba(201, 168, 76, 0.3), 0 2px 8px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        .hero-subtitle {
+            font-family: var(--font-accent);
+            font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+            font-style: italic;
+            color: #e8dccc;
+            opacity: 0.9;
+            text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+            letter-spacing: 0.04em;
+            margin-bottom: 3rem;
+            animation: subtitleFade 4s ease-in-out infinite;
+        }
+        @keyframes subtitleFade {
+            0%,
+            100% {
+                opacity: 0.8;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            animation: scrollBounce 2s ease-in-out infinite;
+            color: #d4c5a0;
+            font-size: 0.85rem;
+            letter-spacing: 0.08em;
+            font-family: var(--font-display);
+            text-transform: uppercase;
+            opacity: 0.8;
+            transition: opacity var(--transition-smooth);
+            text-decoration: none;
+        }
+        .scroll-indicator:hover {
+            opacity: 1;
+            color: var(--deep-gold);
+        }
+        .scroll-arrow {
+            width: 28px;
+            height: 28px;
+            border-right: 2px solid currentColor;
+            border-bottom: 2px solid currentColor;
+            transform: rotate(45deg);
+            animation: arrowPulse 2s ease-in-out infinite;
+        }
+        @keyframes scrollBounce {
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            50% {
+                transform: translateX(-50%) translateY(10px);
+            }
+        }
+        @keyframes arrowPulse {
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* ============ MAIN CONTENT CONTAINER ============ */
+        .main-container {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ============ SECTION STYLES ============ */
+        .section {
+            padding: 5rem 2rem;
+            position: relative;
+        }
+        .section-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: 700;
+            color: var(--deep-gold);
+            text-align: center;
+            margin-bottom: 1rem;
+            letter-spacing: 0.05em;
+            text-shadow: 0 0 20px rgba(201, 168, 76, 0.25);
+        }
+        .section-subtitle {
+            text-align: center;
+            color: #c9b896;
+            font-family: var(--font-accent);
+            font-style: italic;
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.85;
+        }
+
+        /* ============ INTRODUCTION SECTION ============ */
+        #introduction {
+            background: linear-gradient(180deg, var(--bg-deep) 0%, #221a14 40%, #2a1f16 100%);
+            position: relative;
+        }
+        #introduction::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--bronze), var(--deep-gold), var(--bronze), transparent);
+            opacity: 0.7;
+        }
+
+        .intro-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+        .intro-text {
+            color: #d4c5b8;
+            font-size: 1.05rem;
+            line-height: 1.85;
+        }
+        .intro-text p {
+            margin-bottom: 1.2rem;
+        }
+        .intro-text .dropcap {
+            float: left;
+            font-family: var(--font-display);
+            font-size: 4.5rem;
+            font-weight: 700;
+            line-height: 0.75;
+            color: var(--deep-gold);
+            margin-right: 0.6rem;
+            margin-top: 0.15rem;
+            text-shadow: 0 0 15px rgba(201, 168, 76, 0.35);
+        }
+
+        .intro-decoration {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .hobbit-hole-silhouette {
+            width: 100%;
+            max-width: 380px;
+            aspect-ratio: 1 / 1;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 50% 55%, #3a2d1a 0%, #2a1f10 45%, #1a1008 100%);
+            position: relative;
+            box-shadow:
+                0 0 60px rgba(201, 168, 76, 0.2),
+                0 0 120px rgba(139, 94, 60, 0.15),
+                inset 0 0 80px rgba(0, 0, 0, 0.5);
+            border: 3px solid rgba(139, 122, 90, 0.4);
+            overflow: hidden;
+        }
+        .hobbit-hole-silhouette::before {
+            content: '';
+            position: absolute;
+            inset: 12% 15% 30% 15%;
+            border-radius: 50% 50% 10% 10% / 60% 60% 5% 5%;
+            background: #1a1008;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.8);
+        }
+        .hobbit-hole-silhouette::after {
+            content: '';
+            position: absolute;
+            bottom: 18%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30%;
+            height: 25%;
+            background: #1a1008;
+            border-radius: 40% 40% 0 0;
+        }
+        .hobbit-hole-detail {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 22%;
+            height: 22%;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 200, 100, 0.5) 0%, rgba(200, 150, 60, 0.2) 40%, transparent 70%);
+            animation: warmGlow 3s ease-in-out infinite;
+            z-index: 2;
+        }
+        @keyframes warmGlow {
+            0%,
+            100% {
+                opacity: 0.5;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                opacity: 0.9;
+                transform: translate(-50%, -50%) scale(1.3);
+            }
+        }
+
+        /* Fact cards */
+        .fact-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-top: 2.5rem;
+        }
+        .fact-card {
+            background: rgba(58, 45, 32, 0.7);
+            border: 1px solid rgba(139, 122, 90, 0.35);
+            border-radius: 10px;
+            padding: 1.3rem 1rem;
+            text-align: center;
+            transition: all var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        .fact-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--deep-gold), transparent);
+            opacity: 0;
+            transition: opacity var(--transition-smooth);
+        }
+        .fact-card:hover {
+            border-color: var(--deep-gold);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 25px rgba(201, 168, 76, 0.15);
+        }
+        .fact-card:hover::before {
+            opacity: 1;
+        }
+        .fact-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .fact-card h4 {
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            color: var(--deep-gold);
+            letter-spacing: 0.05em;
+            margin-bottom: 0.3rem;
+        }
+        .fact-card p {
+            font-size: 0.85rem;
+            color: #c9b896;
+            line-height: 1.5;
+        }
+
+        /* ============ CHARACTERS SECTION ============ */
+        #characters {
+            background: linear-gradient(180deg, #2a1f16 0%, #1f1810 30%, #1a1410 100%);
+            position: relative;
+        }
+        #characters::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--bronze), var(--deep-gold), var(--bronze), transparent);
+            opacity: 0.7;
+        }
+
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.8rem;
+            margin-top: 1rem;
+        }
+        .character-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 2rem 1.6rem 1.8rem;
+            position: relative;
+            transition: all var(--transition-bounce);
+            cursor: default;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+        }
+        .character-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 14px;
+            border: 1px solid transparent;
+            transition: all var(--transition-smooth);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .character-card:hover {
+            transform: translateY(-10px);
+            box-shadow:
+                0 20px 50px rgba(0, 0, 0, 0.5),
+                0 0 40px var(--glow-warm),
+                0 0 80px rgba(201, 168, 76, 0.12);
+            border-color: rgba(201, 168, 76, 0.5);
+        }
+        .character-card:hover::before {
+            border-color: rgba(201, 168, 76, 0.45);
+            box-shadow: inset 0 0 60px rgba(201, 168, 76, 0.06);
+        }
+        .card-corner-ornament {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            font-size: 1.5rem;
+            opacity: 0.35;
+            transition: all var(--transition-smooth);
+            color: var(--deep-gold);
+            z-index: 0;
+        }
+        .character-card:hover .card-corner-ornament {
+            opacity: 0.75;
+            transform: rotate(15deg) scale(1.2);
+        }
+        .character-icon {
+            font-size: 2.8rem;
+            display: block;
+            margin-bottom: 0.3rem;
+            position: relative;
+            z-index: 0;
+            transition: transform var(--transition-smooth);
+        }
+        .character-card:hover .character-icon {
+            transform: scale(1.1);
+        }
+        .character-name {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--deep-gold);
+            letter-spacing: 0.04em;
+            position: relative;
+            z-index: 0;
+        }
+        .character-role {
+            font-family: var(--font-accent);
+            font-style: italic;
+            font-size: 0.95rem;
+            color: #c9b896;
+            opacity: 0.85;
+            letter-spacing: 0.03em;
+            position: relative;
+            z-index: 0;
+        }
+        .character-desc {
+            font-size: 0.9rem;
+            color: #c4b5a0;
+            line-height: 1.6;
+            flex-grow: 1;
+            position: relative;
+            z-index: 0;
+        }
+        .character-traits {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            position: relative;
+            z-index: 0;
+        }
+        .trait-tag {
+            display: inline-block;
+            font-size: 0.75rem;
+            padding: 0.25em 0.7em;
+            border-radius: 20px;
+            background: rgba(139, 122, 90, 0.2);
+            border: 1px solid rgba(139, 122, 90, 0.3);
+            color: #d4c5a0;
+            letter-spacing: 0.03em;
+            transition: all var(--transition-smooth);
+        }
+        .character-card:hover .trait-tag {
+            background: rgba(201, 168, 76, 0.15);
+            border-color: rgba(201, 168, 76, 0.4);
+            color: #e0c76e;
+        }
+        .card-cta {
+            font-size: 0.8rem;
+            color: var(--deep-gold);
+            text-decoration: none;
+            font-family: var(--font-display);
+            letter-spacing: 0.05em;
+            position: relative;
+            z-index: 0;
+            transition: all var(--transition-smooth);
+            opacity: 0.7;
+            align-self: flex-start;
+            cursor: pointer;
+            border-bottom: 1px solid transparent;
+        }
+        .character-card:hover .card-cta {
+            opacity: 1;
+            border-bottom-color: var(--deep-gold);
+        }
+
+        /* ============ QUOTE SECTION ============ */
+        #quote-section {
+            background: var(--parchment);
+            color: var(--text-dark);
+            position: relative;
+            text-align: center;
+            padding: 6rem 2rem;
+        }
+        #quote-section::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--terracotta), var(--deep-gold), var(--terracotta), transparent);
+            opacity: 0.7;
+        }
+        #quote-section::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--terracotta), var(--deep-gold), var(--terracotta), transparent);
+            opacity: 0.7;
+        }
+        .quote-inner {
+            max-width: 700px;
+            margin: 0 auto;
+            position: relative;
+        }
+        .quote-mark {
+            font-family: var(--font-display);
+            font-size: 8rem;
+            line-height: 0.2;
+            color: var(--deep-gold);
+            opacity: 0.4;
+            display: block;
+            user-select: none;
+            pointer-events: none;
+        }
+        .quote-mark.open {
+            text-align: left;
+            margin-bottom: -0.5rem;
+        }
+        .quote-mark.close {
+            text-align: right;
+            margin-top: -1rem;
+        }
+        .quote-text {
+            font-family: var(--font-accent);
+            font-style: italic;
+            font-size: clamp(1.3rem, 3vw, 2rem);
+            line-height: 1.55;
+            color: #3a2d1a;
+            letter-spacing: 0.02em;
+            padding: 0 1rem;
+        }
+        .quote-attribution {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            color: #6b4d30;
+            letter-spacing: 0.06em;
+            margin-top: 1.5rem;
+            position: relative;
+            display: inline-block;
+            padding-top: 0.8rem;
+        }
+        .quote-attribution::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 1px;
+            background: var(--bronze);
+        }
+        .quote-ornament {
+            display: inline-block;
+            margin: 0 0.5rem;
+            color: var(--deep-gold);
+            font-size: 1.2rem;
+            opacity: 0.7;
+        }
+
+        /* ============ CTA SECTION ============ */
+        #cta-section {
+            background: linear-gradient(180deg, var(--bg-deep) 0%, #1f1810 50%, #1a1410 100%);
+            text-align: center;
+            padding: 5rem 2rem;
+            position: relative;
+        }
+        .cta-text {
+            color: #d4c5b8;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.8;
+            font-family: var(--font-accent);
+            font-style: italic;
+            opacity: 0.9;
+        }
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 0.07em;
+            color: #1a1410;
+            text-decoration: none;
+            border-radius: 50px;
+            cursor: pointer;
+            position: relative;
+            background: linear-gradient(135deg, #d4a84c 0%, #c9a030 30%, #e0c76e 60%, #b89040 100%);
+            border: none;
+            box-shadow:
+                0 6px 25px rgba(201, 168, 76, 0.4),
+                0 0 50px rgba(201, 168, 76, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            transition: all var(--transition-bounce);
+            text-transform: uppercase;
+        }
+        .cta-button:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow:
+                0 12px 35px rgba(201, 168, 76, 0.55),
+                0 0 70px rgba(201, 168, 76, 0.3),
+                0 0 120px rgba(201, 168, 76, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+        .cta-button:active {
+            transform: translateY(-1px) scale(0.98);
+            transition: all 0.1s ease;
+        }
+        .cta-button::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 54px;
+            border: 2px solid rgba(201, 168, 76, 0.5);
+            animation: ctaPulse 2.5s ease-in-out infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+        @keyframes ctaPulse {
+            0%,
+            100% {
+                opacity: 0.4;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.9;
+                transform: scale(1.06);
+            }
+        }
+
+        /* ============ FOOTER ============ */
+        .footer {
+            background: #0f0b08;
+            text-align: center;
+            padding: 2.5rem 2rem;
+            position: relative;
+            border-top: 1px solid rgba(139, 122, 90, 0.25);
+        }
+        .footer-divider {
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--bronze), transparent);
+            margin: 0 auto 1.5rem;
+            opacity: 0.6;
+        }
+        .footer-copy {
+            font-size: 0.85rem;
+            color: #8b7a6a;
+            letter-spacing: 0.04em;
+            font-family: var(--font-display);
+        }
+        .footer-quote {
+            font-family: var(--font-accent);
+            font-style: italic;
+            font-size: 0.85rem;
+            color: #6b5d4e;
+            margin-top: 0.6rem;
+            letter-spacing: 0.03em;
+        }
+        .footer-leaves {
+            font-size: 1.2rem;
+            letter-spacing: 0.4em;
+            opacity: 0.5;
+            margin-bottom: 0.8rem;
+            color: var(--forest-green);
+        }
+
+        /* ============ FADE-IN ANIMATION ============ */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .fade-in-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ============ RESPONSIVE STYLES ============ */
+        @media (max-width: 1024px) {
+            .intro-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .intro-decoration {
+                order: -1;
+            }
+            .hobbit-hole-silhouette {
+                max-width: 250px;
+            }
+            .character-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.4rem;
+            }
+            .fact-cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: clamp(2rem, 8vw, 3.5rem);
+            }
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+            .section {
+                padding: 3.5rem 1.2rem;
+            }
+            .character-grid {
+                grid-template-columns: 1fr;
+                gap: 1.2rem;
+                max-width: 450px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .character-card {
+                padding: 1.5rem 1.3rem 1.4rem;
+            }
+            .fact-cards {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.7rem;
+            }
+            .fact-card {
+                padding: 1rem 0.7rem;
+            }
+            .intro-text .dropcap {
+                font-size: 3.5rem;
+            }
+            .quote-text {
+                font-size: 1.1rem;
+            }
+            .quote-mark {
+                font-size: 5rem;
+            }
+            .scroll-indicator span {
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                min-height: 90vh;
+            }
+            .hero-title {
+                font-size: 1.9rem;
+            }
+            .hero-subtitle {
+                font-size: 0.9rem;
+            }
+            .section {
+                padding: 2.5rem 1rem;
+            }
+            .section-title {
+                font-size: 1.5rem;
+            }
+            .fact-cards {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.5rem;
+            }
+            .fact-card {
+                padding: 0.8rem 0.5rem;
+                border-radius: 8px;
+            }
+            .fact-card h4 {
+                font-size: 0.75rem;
+            }
+            .fact-card p {
+                font-size: 0.7rem;
+            }
+            .fact-icon {
+                font-size: 1.4rem;
+            }
+            .character-name {
+                font-size: 1.2rem;
+            }
+            .character-desc {
+                font-size: 0.82rem;
+            }
+            .cta-button {
+                padding: 0.85rem 1.8rem;
+                font-size: 0.95rem;
+            }
+            .quote-text {
+                font-size: 1rem;
+            }
+            .quote-mark {
+                font-size: 4rem;
+            }
+        }
+
+        /* ============ REDUCED MOTION ============ */
+        @media (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+            .hero-title,
+            .hero-subtitle,
+            .scroll-indicator,
+            .cta-button::after,
+            .hobbit-hole-detail,
+            .ornament-divider .ornament {
+                animation: none;
+            }
+            .fade-in-section {
+                opacity: 1;
+                transform: none;
+                transition: none;
+            }
+            .character-card:hover {
+                transform: translateY(-4px);
+            }
+            .cta-button:hover {
+                transform: translateY(-2px) scale(1.01);
+            }
+            .hero-canvas {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============ HERO SECTION ============ -->
+    <section class="hero" id="hero" aria-label="Hero section - The Shire">
+        <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
+        <div class="hero-content">
+            <h1 class="hero-title">The Shire</h1>
+            <p class="hero-subtitle">"In a hole in the ground there lived a hobbit..."</p>
+        </div>
+        <a href="#introduction" class="scroll-indicator" aria-label="Scroll to explore">
+            <span>Scroll to Explore</span>
+            <div class="scroll-arrow"></div>
+        </a>
+    </section>
+
+    <!-- ============ MAIN CONTENT ============ -->
+    <div class="main-container">
+
+        <!-- Introduction Section -->
+        <section class="section fade-in-section" id="introduction" aria-labelledby="intro-title">
+            <div class="section-inner">
+                <h2 class="section-title" id="intro-title">Welcome to The Shire</h2>
+                <p class="section-subtitle">The Heart of the West</p>
+
+                <div class="intro-grid">
+                    <div class="intro-text">
+                        <p>
+                            <span class="dropcap">T</span>he Shire is a land of rolling green hills, lush farmland, and quiet rivers. It is home to the hobbits, a peaceful folk who love good food, gardens, and simple pleasures. Here, time moves slowly, and life is measured in meals and seasons. The Shire is divided into four main regions: the Northfarthing, Southfarthing, Eastfarthing, and Westfarthing, with Hobbiton and Bywater at its heart.
+                        </p>
+                        <p>
+                            The Party Tree stands in the center of Hobbiton, a massive oak where Bilbo Baggins held his famous farewell party. The hobbits live in hobbit holes—cozy, circular homes dug into hillsides, with round doors painted in bright colors. It is a land of beauty, peace, and simple joy.
+                        </p>
+                    </div>
+                    <div class="intro-decoration" aria-hidden="true">
+                        <div class="hobbit-hole-silhouette">
+                            <div class="hobbit-hole-detail"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fact Cards -->
+                <div class="fact-cards">
+                    <div class="fact-card">
+                        <span class="fact-icon">🗺️</span>
+                        <h4>Location</h4>
+                        <p>Eriador, northwest of Middle-earth</p>
+                    </div>
+                    <div class="fact-card">
+                        <span class="fact-icon">🌳</span>
+                        <h4>Notable Features</h4>
+                        <p>Rolling hills, hobbit holes, the Party Tree, Bywater</p>
+                    </div>
+                    <div class="fact-card">
+                        <span class="fact-icon">☀️</span>
+                        <h4>Climate</h4>
+                        <p>Temperate, with long summers and mild winters</p>
+                    </div>
+                    <div class="fact-card">
+                        <span class="fact-icon">🚪</span>
+                        <h4>Population</h4>
+                        <p>Hobbits — lovers of peace, good food, and gardening</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ornament Divider -->
+        <div class="ornament-divider" aria-hidden="true">
+            <span class="line"></span>
+            <span class="ornament">🍂</span>
+            <span class="line"></span>
+        </div>
+
+        <!-- Notable Hobbits Section -->
+        <section class="section fade-in-section" id="characters" aria-labelledby="characters-title">
+            <div class="section-inner">
+                <h2 class="section-title" id="characters-title">Notable Hobbits</h2>
+                <p class="section-subtitle">Heroes of the Shire &amp; Beyond</p>
+
+                <div class="character-grid">
+                    <!-- Frodo Baggins -->
+                    <article class="character-card">
+                        <span class="card-corner-ornament" aria-hidden="true">💍</span>
+                        <span class="character-icon" aria-hidden="true">🧝</span>
+                        <h3 class="character-name">Frodo Baggins</h3>
+                        <p class="character-role">The Ring-bearer</p>
+                        <p class="character-desc">
+                            Frodo inherited the One Ring from his uncle Bilbo and was tasked with destroying it in the fires of Mount Doom. Despite the Ring's corrupting influence, he remained steadfast, carrying the burden to the very end. His journey is a testament to the idea that even the smallest person can change the course of the future.
+                        </p>
+                        <div class="character-traits">
+                            <span class="trait-tag">Courageous</span>
+                            <span class="trait-tag">Resilient</span>
+                            <span class="trait-tag">Loyal</span>
+                        </div>
+                        <span class="card-cta" tabindex="0" role="button" aria-label="Learn more about Frodo's journey">Learn more about Frodo's journey →</span>
+                    </article>
+
+                    <!-- Samwise Gamgee -->
+                    <article class="character-card">
+                        <span class="card-corner-ornament" aria-hidden="true">🌻</span>
+                        <span class="character-icon" aria-hidden="true">🌿</span>
+                        <h3 class="character-name">Samwise Gamgee</h3>
+                        <p class="character-role">The Loyal Gardener</p>
+                        <p class="character-desc">
+                            Samwise, Frodo's loyal gardener, is the true hero of the tale. He accompanied Frodo on the quest, providing unwavering support and friendship. Known for his simple wisdom, deep love of the Shire, and steadfast loyalty, Sam embodies humility and courage. After the war, he became Mayor of the Shire.
+                        </p>
+                        <div class="character-traits">
+                            <span class="trait-tag">Loyal</span>
+                            <span class="trait-tag">Humble</span>
+                            <span class="trait-tag">Wise</span>
+                        </div>
+                        <span class="card-cta" tabindex="0" role="button" aria-label="Learn more about Samwise's journey">Learn more about Sam's devotion →</span>
+                    </article>
+
+                    <!-- Bilbo Baggins -->
+                    <article class="character-card">
+                        <span class="card-corner-ornament" aria-hidden="true">📜</span>
+                        <span class="character-icon" aria-hidden="true">🗝️</span>
+                        <h3 class="character-name">Bilbo Baggins</h3>
+                        <p class="character-role">The Adventurer</p>
+                        <p class="character-desc">
+                            Bilbo is the hobbit who started it all. He embarked on an adventure with Thorin Oakenshield to reclaim the Lonely Mountain, finding the One Ring in Gollum's cave along the way. A lover of maps, riddles, and stories, Bilbo lived to be 131 years old—one of the oldest hobbits in history.
+                        </p>
+                        <div class="character-traits">
+                            <span class="trait-tag">Curious</span>
+                            <span class="trait-tag">Witty</span>
+                            <span class="trait-tag">Adventurous</span>
+                        </div>
+                        <span class="card-cta" tabindex="0" role="button" aria-label="Learn more about Bilbo's adventures">Learn more about Bilbo's adventures →</span>
+                    </article>
+
+                    <!-- Merry Brandybuck -->
+                    <article class="character-card">
+                        <span class="card-corner-ornament" aria-hidden="true">⚔️</span>
+                        <span class="character-icon" aria-hidden="true">🛡️</span>
+                        <h3 class="character-name">Meriadoc Brandybuck</h3>
+                        <p class="character-role">Master of Buckland</p>
+                        <p class="character-desc">
+                            Merry is one of Frodo's closest friends and a member of the Fellowship. Known for his intelligence and bravery, he played a crucial role in the War of the Ring, helping to defeat the Witch-king of Angmar alongside Éowyn. After the war, Merry became the Master of Buckland.
+                        </p>
+                        <div class="character-traits">
+                            <span class="trait-tag">Brave</span>
+                            <span class="trait-tag">Intelligent</span>
+                            <span class="trait-tag">Loyal</span>
+                        </div>
+                        <span class="card-cta" tabindex="0" role="button" aria-label="Learn more about Merry's story">Learn more about Merry's valor →</span>
+                    </article>
+
+                    <!-- Pippin Took -->
+                    <article class="character-card">
+                        <span class="card-corner-ornament" aria-hidden="true">🎵</span>
+                        <span class="character-icon" aria-hidden="true">✨</span>
+                        <h3 class="character-name">Peregrin Took</h3>
+                        <p class="character-role">The Youngest Hobbit</p>
+                        <p class="character-desc">
+                            Pippin is the youngest of the hobbits and a member of the Fellowship. Known for his mischievous nature and quick wit, his journey takes him from the Shire to Minas Tirith, where he serves as a guard in Gondor. Despite his playful nature, Pippin proves his worth in battle.
+                        </p>
+                        <div class="character-traits">
+                            <span class="trait-tag">Mischievous</span>
+                            <span class="trait-tag">Courageous</span>
+                            <span class="trait-tag">Quick-witted</span>
+                        </div>
+                        <span class="card-cta" tabindex="0" role="button" aria-label="Learn more about Pippin's journey">Learn more about Pippin's growth →</span>
+                    </article>
+
+                    <!-- Gandalf the Grey -->
+                    <article class="character-card">
+                        <span class="card-corner-ornament" aria-hidden="true">🔮</span>
+                        <span class="character-icon" aria-hidden="true">🧙‍♂️</span>
+                        <h3 class="character-name">Gandalf the Grey</h3>
+                        <p class="character-role">The Wise Wizard</p>
+                        <p class="character-desc">
+                            Gandalf is one of the Maiar—a divine being sent to Middle-earth to help fight Sauron. Known for his wisdom and deep connection to the hobbits, he guided Frodo and his companions through their journey, providing counsel and magical aid. A friend to all who fight against darkness.
+                        </p>
+                        <div class="character-traits">
+                            <span class="trait-tag">Wise</span>
+                            <span class="trait-tag">Powerful</span>
+                            <span class="trait-tag">Compassionate</span>
+                        </div>
+                        <span class="card-cta" tabindex="0" role="button" aria-label="Learn more about Gandalf">Learn more about Gandalf →</span>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quote Section -->
+        <section class="section fade-in-section parchment-texture" id="quote-section" aria-labelledby="quote-heading">
+            <div class="quote-inner">
+                <span class="quote-mark open" aria-hidden="true">"</span>
+                <p class="quote-text" id="quote-heading">
+                    The Shire is my home. My heart belongs there. There is no way back to the Shire, but there is always a way forward.
+                </p>
+                <span class="quote-mark close" aria-hidden="true">"</span>
+                <p class="quote-attribution">
+                    <span class="quote-ornament" aria-hidden="true">❧</span> Samwise Gamgee
+                    <span class="quote-ornament" aria-hidden="true">❧</span>
+                </p>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="section fade-in-section" id="cta-section" aria-labelledby="cta-title">
+            <div class="section-inner">
+                <h2 class="section-title" id="cta-title">Explore Middle-earth</h2>
+                <p class="cta-text">
+                    Beyond the rolling hills of the Shire lie vast forests, towering mountains, and ancient cities. The road goes ever on—will you follow it?
+                </p>
+                <a href="#" class="cta-button" role="button" aria-label="Explore more of Middle-earth">Explore More of Middle-earth</a>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer" role="contentinfo">
+        <div class="footer-leaves" aria-hidden="true">🍂 🌿 🍂</div>
+        <div class="footer-divider" aria-hidden="true"></div>
+        <p class="footer-copy">&copy; 2024 Middle-earth Explorer</p>
+        <p class="footer-quote">"Not all those who wander are lost." — J.R.R. Tolkien</p>
+    </footer>
+
+    <script>
+        (function() {
+            // ============ HERO CANVAS - FIREFLY PARTICLES ============
+            const canvas = document.getElementById('heroCanvas');
+            if (canvas && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+                const ctx = canvas.getContext('2d');
+                let width, height;
+                const particles = [];
+                const maxParticles = 55;
+                const isMobile = window.innerWidth < 768;
+
+                function resizeCanvas() {
+                    width = canvas.width = canvas.offsetWidth;
+                    height = canvas.height = canvas.offsetHeight;
+                }
+
+                class Firefly {
+                    constructor() {
+                        this.reset(true);
+                    }
+                    reset(initial) {
+                        this.x = Math.random() * width;
+                        this.y = initial ? Math.random() * height : height + Math.random() * 100;
+                        this.size = Math.random() * 2.5 + 1.2;
+                        this.speedY = Math.random() * 0.5 + 0.25;
+                        this.speedX = (Math.random() - 0.5) * 0.6;
+                        this.opacity = Math.random() * 0.7 + 0.2;
+                        this.twinkleSpeed = Math.random() * 0.03 + 0.008;
+                        this.twinkleOffset = Math.random() * Math.PI * 2;
+                        this.glowSize = this.size * (Math.random() * 2.5 + 2);
+                    }
+                    update() {
+                        this.y -= this.speedY;
+                        this.x += this.speedX + Math.sin(this.y * 0.02 + this.twinkleOffset) * 0.3;
+                        this.opacity += Math.sin(Date.now() * this.twinkleSpeed + this.twinkleOffset) * 0.015;
+                        this.opacity = Math.max(0.1, Math.min(0.9, this.opacity));
+                        if (this.y < -30 || this.x < -30 || this.x > width + 30) {
+                            this.reset(false);
+                        }
+                    }
+                    draw(ctx) {
+                        const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.glowSize);
+                        const alpha = this.opacity;
+                        gradient.addColorStop(0, `rgba(255,210,130,${alpha})`);
+                        gradient.addColorStop(0.25, `rgba(255,190,100,${alpha * 0.7})`);
+                        gradient.addColorStop(0.6, `rgba(200,150,60,${alpha * 0.2})`);
+                        gradient.addColorStop(1, 'rgba(200,150,60,0)');
+                        ctx.fillStyle = gradient;
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.glowSize, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = `rgba(255,240,200,${alpha})`;
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+
+                function initParticles() {
+                    particles.length = 0;
+                    const count = isMobile ? Math.floor(maxParticles * 0.5) : maxParticles;
+                    for (let i = 0; i < count; i++) {
+                        particles.push(new Firefly());
+                    }
+                }
+
+                function animate() {
+                    ctx.clearRect(0, 0, width, height);
+                    particles.forEach(p => {
+                        p.update();
+                        p.draw(ctx);
+                    });
+                    requestAnimationFrame(animate);
+                }
+
+                resizeCanvas();
+                initParticles();
+                animate();
+
+                window.addEventListener('resize', () => {
+                    resizeCanvas();
+                    const newIsMobile = window.innerWidth < 768;
+                    if (newIsMobile !== isMobile) {
+                        isMobile = newIsMobile;
+                        initParticles();
+                    }
+                });
+            }
+
+            // ============ FADE-IN ON SCROLL (Intersection Observer) ============
+            const fadeSections = document.querySelectorAll('.fade-in-section');
+            if (fadeSections.length > 0 && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    threshold: 0.12,
+                    rootMargin: '0px 0px -40px 0px'
+                });
+                fadeSections.forEach(section => observer.observe(section));
+            } else {
+                // If reduced motion, make all sections visible immediately
+                fadeSections.forEach(section => section.classList.add('visible'));
+            }
+
+            // ============ SMOOTH SCROLL FOR SCROLL INDICATOR ============
+            const scrollIndicator = document.querySelector('.scroll-indicator');
+            if (scrollIndicator) {
+                scrollIndicator.addEventListener('click', function(e) {
+                    const targetId = this.getAttribute('href');
+                    if (targetId && targetId.startsWith('#')) {
+                        const target = document.querySelector(targetId);
+                        if (target) {
+                            e.preventDefault();
+                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }
+                });
+            }
+
+            // ============ CARD CTA CLICK HANDLERS ============
+            document.querySelectorAll('.card-cta').forEach(cta => {
+                cta.addEventListener('click', function() {
+                    const card = this.closest('.character-card');
+                    const name = card ? card.querySelector('.character-name')?.textContent :
+                        'this character';
+                    // Subtle feedback pulse on the card
+                    if (card) {
+                        card.style.transition = 'all 0.15s ease';
+                        card.style.transform = 'scale(0.97)';
+                        card.style.boxShadow =
+                            '0 0 50px rgba(201,168,76,0.6), 0 0 100px rgba(201,168,76,0.3)';
+                        setTimeout(() => {
+                            card.style.transition = 'all 0.5s cubic-bezier(0.34,1.56,0.64,1)';
+                            card.style.transform = '';
+                            card.style.boxShadow = '';
+                        }, 180);
+                    }
+                    console.log(`Exploring more about ${name}...`);
+                });
+                cta.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+            });
+
+            // ============ CTA BUTTON CLICK ============
+            const mainCta = document.querySelector('.cta-button');
+            if (mainCta) {
+                mainCta.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const btn = this;
+                    btn.style.transition = 'all 0.12s ease';
+                    btn.style.transform = 'scale(0.94)';
+                    btn.style.boxShadow = '0 0 80px rgba(201,168,76,0.8), 0 0 150px rgba(201,168,76,0.5)';
+                    setTimeout(() => {
+                        btn.style.transition = 'all 0.5s cubic-bezier(0.34,1.56,0.64,1)';
+                        btn.style.transform = '';
+                        btn.style.boxShadow = '';
+                    }, 200);
+                    // Scroll to top or could navigate elsewhere
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+        })();
+    </script>
+</body>
+</html>

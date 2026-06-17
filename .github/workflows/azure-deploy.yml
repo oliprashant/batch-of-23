@@ -1,0 +1,141 @@
+name: Deploy to Azure VM
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows manual trigger via gh workflow run
+
+env:
+  RESOURCE_GROUP: azure-ci-cd-rg
+  VM_NAME: cicd-vm
+  LOCATION: eastus # Change to westus or centralus if quota errors happen
+  VM_IMAGE: Ubuntu2204
+  VM_SIZE: Standard_D2s_v3
+
+jobs:
+  provision-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 2. Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: 3. Provision Infrastructure (Idempotent)
+        run: |
+          echo "Checking/Creating Resource Group..."
+          az group create --name ${{ env.RESOURCE_GROUP }} --location ${{ env.LOCATION }}
+          
+          echo "Checking if VM exists..."
+          VM_EXISTS=$(az vm list -g ${{ env.RESOURCE_GROUP }} --query "[?name=='${{ env.VM_NAME }}'].name" -o tsv)
+          
+          if [ -z "$VM_EXISTS" ]; then
+            echo "Provisioning new Ubuntu VM..."
+            az vm create \
+              --resource-group ${{ env.RESOURCE_GROUP }} \
+              --name ${{ env.VM_NAME }} \
+              --image ${{ env.VM_IMAGE }} \
+              --size ${{ env.VM_SIZE }} \
+              --admin-username azureuser \
+              --generate-ssh-keys \
+              --public-ip-sku Standard
+              
+            echo "Opening Port 80 in Network Security Group..."
+            az vm open-port --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.VM_NAME }} --port 80 --priority 1001
+          else
+            echo "VM already exists. Checking power state..."
+            VM_STATE=$(az vm show -g ${{ env.RESOURCE_GROUP }} -n ${{ env.VM_NAME }} -d --query powerState -o tsv)
+            if [[ "$VM_STATE" != *"running"* ]]; then
+              echo "VM is stopped. Starting VM automatically..."
+              az vm start -g ${{ env.RESOURCE_GROUP }} -n ${{ env.VM_NAME }}
+            fi
+          fi
+
+      - name: 4. Fetch Public IP Dynamically
+        id: get-ip
+        run: |
+          VM_IP=$(az vm show -g ${{ env.RESOURCE_GROUP }} -n ${{ env.VM_NAME }} -d --query publicIps -o tsv)
+          echo "VM_IP=$VM_IP" >> $GITHUB_ENV
+          echo "Target Public IP: $VM_IP"
+
+      - name: 5. Setup Apache and App Directory Structure
+        run: |
+          az vm run-command invoke \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --name ${{ env.VM_NAME }} \
+            --command-id RunShellScript \
+            --scripts "
+              sudo apt-get update -y && sudo apt-get install apache2 -y
+              sudo mkdir -p /var/www/azure-cicd-app/v1 /var/www/azure-cicd-app/v2
+              sudo chown -R azureuser:azureuser /var/www/azure-cicd-app
+              
+              # Set up Apache VirtualHost to point to the 'current' symlink
+              if [ ! -f /etc/apache2/sites-available/azure-app.conf ]; then
+                echo '<VirtualHost *:80>
+                  DocumentRoot /var/www/azure-cicd-app/current
+                  <Directory /var/www/azure-cicd-app/current>
+                      AllowOverride None
+                      Require all granted
+                  </Directory>
+                </VirtualHost>' | sudo tee /etc/apache2/sites-available/azure-app.conf
+                
+                sudo a2dissite 000-default.conf
+                sudo a2ensite azure-app.conf
+                sudo systemctl reload apache2
+              fi
+            "
+
+      - name: 6. Blue-Green Deployment & Placeholder Replacement
+        run: |
+          # 1. Grab metadata values
+          COMMIT_HASH=$(git rev-parse --short HEAD)
+          DEPLOY_TIME=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          
+          # 2. Inject values into index.html locally
+          SED_HTML=$(cat azure-demo-04/azure-ci-cd-pipeline/index.html | \
+            sed "s/__COMMIT_HASH__/$COMMIT_HASH/g" | \
+            sed "s/__DEPLOY_TIME__/$DEPLOY_TIME/g")
+          
+          # 3. Encode to safely transmit via Azure Custom Script Agent
+          B64_HTML=$(echo "$SED_HTML" | base64 -w 0)
+          
+          # 4. Invoke the atomic Blue-Green switch script directly on the VM
+          az vm run-command invoke \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --name ${{ env.VM_NAME }} \
+            --command-id RunShellScript \
+            --scripts "
+              # Figure out which folder is currently INACTIVE
+              CURRENT_TARGET=\$(readlink -f /var/www/azure-cicd-app/current)
+              if [ \"\$CURRENT_TARGET\" = \"/var/www/azure-cicd-app/v1\" ]; then
+                NEXT_DIR=\"v2\"
+              else
+                NEXT_DIR=\"v1\"
+              fi
+              
+              echo \"Deploying code into inactive environment: \$NEXT_DIR\"
+              echo \"$B64_HTML\" | base64 -d > /var/www/azure-cicd-app/\$NEXT_DIR/index.html
+              
+              # Atomic Swapping Symlink
+              ln -sfn /var/www/azure-cicd-app/\$NEXT_DIR /var/www/azure-cicd-app/current
+              
+              # Graceful log audit & reload 
+              echo \"[\$(date)] Deployed commit $COMMIT_HASH to \$NEXT_DIR\" >> /var/www/azure-cicd-app/deploy.log
+              sudo systemctl reload apache2
+            "
+
+      - name: 7. Verify Live Deployment
+        run: |
+          echo "Testing endpoint connection..."
+          sleep 5
+          HTTP_STATUS=$(curl -o /dev/null -s -w "%{http_code}" http://${{ env.VM_IP }}/)
+          if [ "$HTTP_STATUS" -eq 200 ]; then
+            echo "🟢 Deployment Verification Succeeded! Site is live at http://${{ env.VM_IP }}/"
+          else
+            echo "🔴 Deployment Verification Failed with HTTP Status: $HTTP_STATUS"
+            exit 1
+          fi
