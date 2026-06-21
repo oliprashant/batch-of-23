@@ -54,14 +54,12 @@ jobs:
               az vm start -g ${{ env.RESOURCE_GROUP }} -n ${{ env.VM_NAME }}
             fi
           fi
-
       - name: 4. Fetch Public IP Dynamically
         id: get-ip
         run: |
           VM_IP=$(az vm show -g ${{ env.RESOURCE_GROUP }} -n ${{ env.VM_NAME }} -d --query publicIps -o tsv)
           echo "VM_IP=$VM_IP" >> $GITHUB_ENV
           echo "Target Public IP: $VM_IP"
-
       - name: 5. Setup Apache and App Directory Structure
         run: |
           az vm run-command invoke \
@@ -87,43 +85,53 @@ jobs:
                 sudo systemctl reload apache2
               fi
             "
-
-      - name: 6. Blue-Green Deployment via SSH
+      - name: 6. Blue-Green Deployment & Placeholder Replacement
         run: |
           COMMIT_HASH=$(git rev-parse --short HEAD)
           DEPLOY_TIME=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
           
-          # Replace placeholders in HTML (No more Gzip/Base64 hacking needed!)
+          # Replace placeholders in HTML
           sed "s/__COMMIT_HASH__/$COMMIT_HASH/g; s/__DEPLOY_TIME__/$DEPLOY_TIME/g" \
             azure-demo-04/azure-ci-cd-pipeline/index.html > /tmp/index.html
           
-          echo "Uploading app payload via SCP..."
-          # SCP automatically uses the ~/.ssh/id_rsa key generated in Step 3
-          scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
-            /tmp/index.html azureuser@${{ env.VM_IP }}:/tmp/index-upload.html
+          # Gzip the HTML to reduce size
+          gzip -c /tmp/index.html > /tmp/index.html.gz
+          B64_GZ=$(base64 -w0 /tmp/index.html.gz)
           
-          echo "Executing deployment on the VM via SSH..."
-          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null azureuser@${{ env.VM_IP }} << 'EOF'
-            CURRENT=$(readlink -f /var/www/azure-cicd-app/current 2>/dev/null || echo '')
-            if [ "$CURRENT" = '/var/www/azure-cicd-app/v1' ]; then
-              NEXT=v2
-            else
-              NEXT=v1
-            fi
-            
-            echo "Deploying to: $NEXT"
-            sudo mkdir -p /var/www/azure-cicd-app/v1 /var/www/azure-cicd-app/v2
-            sudo mv /tmp/index-upload.html /var/www/azure-cicd-app/$NEXT/index.html
-            sudo chown -R www-data:www-data /var/www/azure-cicd-app/$NEXT
-            sudo chmod 644 /var/www/azure-cicd-app/$NEXT/index.html
-            sudo ln -sfn /var/www/azure-cicd-app/$NEXT /var/www/azure-cicd-app/current
-            sudo systemctl reload apache2
-            
-            echo "[$(date)] Deployed update to $NEXT" | sudo tee -a /var/www/azure-cicd-app/deploy.log
-            echo "Live: $(readlink -f /var/www/azure-cicd-app/current)"
-            curl -s -o /dev/null -w 'Local: HTTP %{http_code}\n' http://localhost/
+          # 💡 FIX: Generate ONE combined deployment script locally using a heredoc (cat << EOF)
+          cat << EOF > deploy-script.sh
+          #!/bin/bash
+          
+          # 1. Decode and unzip the payload directly on the VM
+          echo '$B64_GZ' | base64 -d | gunzip > /tmp/index-upload.html
+          
+          # 2. Execute Blue-Green Deployment logic
+          CURRENT=\$(readlink -f /var/www/azure-cicd-app/current 2>/dev/null || echo '')
+          if [ "\$CURRENT" = '/var/www/azure-cicd-app/v1' ]; then
+            NEXT=v2
+          else
+            NEXT=v1
+          fi
+          
+          echo "Deploying to: \$NEXT"
+          sudo mkdir -p /var/www/azure-cicd-app/v1 /var/www/azure-cicd-app/v2
+          sudo mv /tmp/index-upload.html /var/www/azure-cicd-app/\$NEXT/index.html
+          sudo chown -R www-data:www-data /var/www/azure-cicd-app/\$NEXT
+          sudo chmod 644 /var/www/azure-cicd-app/\$NEXT/index.html
+          sudo ln -sfn /var/www/azure-cicd-app/\$NEXT /var/www/azure-cicd-app/current
+          sudo systemctl reload apache2
+          
+          echo "[\$(date)] Deployed $COMMIT_HASH to \$NEXT" | sudo tee -a /var/www/azure-cicd-app/deploy.log
+          echo "Live: \$(readlink -f /var/www/azure-cicd-app/current)"
+          curl -s -o /dev/null -w 'Local: HTTP %{http_code}\n' http://localhost/
           EOF
-
+          
+          # Step 6 Execute: Send the single combined script to Azure
+          az vm run-command invoke \
+            --resource-group ${{ env.RESOURCE_GROUP }} \
+            --name ${{ env.VM_NAME }} \
+            --command-id RunShellScript \
+            --scripts @deploy-script.sh
       - name: 7. Verify Live Deployment
         run: |
           echo "Testing endpoint connection..."
