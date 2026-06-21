@@ -93,31 +93,50 @@ jobs:
           COMMIT_HASH=$(git rev-parse --short HEAD)
           DEPLOY_TIME=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
           
-          SED_HTML=$(cat azure-demo-04/azure-ci-cd-pipeline/index.html | \
-            sed "s/__COMMIT_HASH__/$COMMIT_HASH/g" | \
-            sed "s/__DEPLOY_TIME__/$DEPLOY_TIME/g")
+          # Create deploy script locally (avoids argument limit)
+          cat > /tmp/deploy.sh << 'SCRIPT_EOF'
+          #!/bin/bash
+          set -e
           
-          B64_HTML=$(echo "$SED_HTML" | base64 -w 0)
+          CURRENT_TARGET=$(readlink -f /var/www/azure-cicd-app/current 2>/dev/null || echo "")
+          if [ "$CURRENT_TARGET" = "/var/www/azure-cicd-app/v1" ]; then
+            NEXT_DIR="v2"
+          else
+            NEXT_DIR="v1"
+          fi
+          
+          echo "Deploying to inactive slot: $NEXT_DIR"
+          sudo mkdir -p /var/www/azure-cicd-app/v1 /var/www/azure-cicd-app/v2
+          
+          sudo tee /var/www/azure-cicd-app/$NEXT_DIR/index.html > /dev/null << 'HTML_EOF'
+          SCRIPT_EOF
+          
+          # Append the actual HTML (with placeholders already replaced)
+          sed "s/__COMMIT_HASH__/$COMMIT_HASH/g; s/__DEPLOY_TIME__/$DEPLOY_TIME/g" \
+            azure-demo-04/azure-ci-cd-pipeline/index.html >> /tmp/deploy.sh
+          
+          # Close the heredoc and finish the script
+          cat >> /tmp/deploy.sh << 'SCRIPT_END'
+          HTML_EOF
+          
+          sudo chown -R www-data:www-data /var/www/azure-cicd-app/
+          sudo chmod -R 755 /var/www/azure-cicd-app/
+          
+          sudo ln -sfn /var/www/azure-cicd-app/$NEXT_DIR /var/www/azure-cicd-app/current
+          
+          echo "[$(date)] Deployed commit $COMMIT_HASH to $NEXT_DIR" | sudo tee -a /var/www/azure-cicd-app/deploy.log
+          sudo systemctl reload apache2
+          
+          echo "Deployment complete: $NEXT_DIR is now live"
+          SCRIPT_END
+          
+          chmod +x /tmp/deploy.sh
           
           az vm run-command invoke \
             --resource-group ${{ env.RESOURCE_GROUP }} \
             --name ${{ env.VM_NAME }} \
             --command-id RunShellScript \
-            --scripts "
-              CURRENT_TARGET=\$(readlink -f /var/www/azure-cicd-app/current)
-              if [ \"\$CURRENT_TARGET\" = \"/var/www/azure-cicd-app/v1\" ]; then
-                NEXT_DIR=\"v2\"
-              else
-                NEXT_DIR=\"v1\"
-              fi
-              
-              echo \"Deploying code into inactive environment: \$NEXT_DIR\"
-              echo \"$B64_HTML\" | base64 -d > /var/www/azure-cicd-app/\$NEXT_DIR/index.html
-              
-              ln -sfn /var/www/azure-cicd-app/\$NEXT_DIR /var/www/azure-cicd-app/current
-              echo \"[\$(date)] Deployed commit $COMMIT_HASH to \$NEXT_DIR\" >> /var/www/azure-cicd-app/deploy.log
-              sudo systemctl reload apache2
-            "
+            --scripts @/tmp/deploy.sh
 
       - name: 7. Verify Live Deployment
         run: |
