@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-  workflow_dispatch: # Allows manual trigger via gh workflow run
+  workflow_dispatch:
 
 env:
   RESOURCE_GROUP: azure-ci-cd-rg
@@ -93,27 +93,18 @@ jobs:
           COMMIT_HASH=$(git rev-parse --short HEAD)
           DEPLOY_TIME=$(date -u +"%Y-%m-%d %H:%M:%S UTC")
           
-          # Replace placeholders in HTML
           sed "s/__COMMIT_HASH__/$COMMIT_HASH/g; s/__DEPLOY_TIME__/$DEPLOY_TIME/g" \
             azure-demo-04/azure-ci-cd-pipeline/index.html > /tmp/index.html
           
-          # Gzip the HTML to reduce size (106KB → ~20KB)
-          gzip -c /tmp/index.html > /tmp/index.html.gz
-          B64_GZ=$(base64 -w0 /tmp/index.html.gz)
+          B64_GZ=$(gzip -c /tmp/index.html | base64 -w0)
           
-          # Step 6a: Upload the gzipped HTML to the VM
-          az vm run-command invoke \
-            --resource-group ${{ env.RESOURCE_GROUP }} \
-            --name ${{ env.VM_NAME }} \
-            --command-id RunShellScript \
-            --scripts "echo '$B64_GZ' | base64 -d | gunzip > /tmp/index-upload.html"
-          
-          # Step 6b: Create and run the deploy script on the VM
           az vm run-command invoke \
             --resource-group ${{ env.RESOURCE_GROUP }} \
             --name ${{ env.VM_NAME }} \
             --command-id RunShellScript \
             --scripts "
+              echo '$B64_GZ' | base64 -d | gunzip > /tmp/index-upload.html
+              
               CURRENT=\$(readlink -f /var/www/azure-cicd-app/current 2>/dev/null || echo '')
               if [ \"\$CURRENT\" = '/var/www/azure-cicd-app/v1' ]; then
                 NEXT=v2
